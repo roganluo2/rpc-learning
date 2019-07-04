@@ -1,19 +1,22 @@
 package com.my.rpc;
 
 import com.my.rpc.server.bio.RpcServer;
-import com.my.rpc.user.UserServiceImp;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @Description TODO
  * @Date 2019/7/3 20:59
  * @Created by rogan.luo
  */
+@ComponentScan(basePackages = "com.my.rpc")
 public class App {
 
     public static void main(String[] args) {
 
-        new RpcServer(new UserServiceImp(),8080).start();
-        System.out.println("服务端启动成功！！！");
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(App.class);
+        RpcServer rpcServer = applicationContext.getBean("rpcServer", RpcServer.class);
+        rpcServer.start(8080);
 
     }
 }

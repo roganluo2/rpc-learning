@@ -1,14 +1,13 @@
 package com.my.rpc.handler;
 
-import com.alibaba.fastjson.JSONObject;
 import com.my.rpc.protocol.RpcRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.util.Map;
 
 /**
  * @Description TODO
@@ -21,7 +20,7 @@ public class ProcessHandler implements Runnable{
 
     private Socket socket;
 
-    private Object service;
+    private Map<String, Object> serviceMap;
 
     public Object handle(RpcRequest rpcRequest){
         try {
@@ -39,6 +38,7 @@ public class ProcessHandler implements Runnable{
                  }
             }
             Method method = aClass.getMethod(rpcRequest.getMethodName(), paramClasses);
+            Object service = serviceMap.get(className);
             return method.invoke(service, params);
         } catch (Exception e) {
             e.printStackTrace();

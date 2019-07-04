@@ -1,36 +1,34 @@
 package com.my.rpc.server.bio;
 
-import com.alibaba.fastjson.JSONObject;
+import com.my.rpc.anno.APIInfo;
 import com.my.rpc.handler.ProcessHandler;
-import com.my.rpc.protocol.RpcRequest;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @Description 接收端
  * @Date 2019/7/3 12:53
  * @Created by rogan.luo
  */
-public class RpcServer {
+public class RpcServer implements ApplicationContextAware, InitializingBean {
 
     private ExecutorService executorService = Executors.newCachedThreadPool();
 
-    private Object service;
+    private Map<String,Object> serviceMap = new HashMap<String,Object>();
 
-    private Integer port;
 
-    public RpcServer(Object service, Integer port) {
-        this.service = service;
-        this.port = port;
-    }
-
-    public void start(){
+    public void start(int port){
         ServerSocket serverSocket = null;
         Socket socket = null;
         InputStream inputStream = null;
@@ -40,7 +38,7 @@ public class RpcServer {
             while (true)
             {
                 socket = serverSocket.accept();
-                executorService.execute(new ProcessHandler(socket, service));
+                executorService.execute(new ProcessHandler(socket,serviceMap ));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,8 +76,21 @@ public class RpcServer {
                 }
             }
         }
-
-
     }
 
+    //注册bean
+    public void afterPropertiesSet() throws Exception {
+        Map<String, Object> beansWithAnnotation = applicationContext.getBeansWithAnnotation(APIInfo.class);
+        Set<Map.Entry<String, Object>> entries = beansWithAnnotation.entrySet();
+        for(Map.Entry<String,Object> e:entries)
+        {
+            APIInfo annotation = e.getValue().getClass().getAnnotation(APIInfo.class);
+            serviceMap.put(annotation.value().getName(), e.getValue());
+        }
+    }
+
+    private ApplicationContext applicationContext;
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+         this.applicationContext = applicationContext;
+    }
 }
