@@ -1,6 +1,7 @@
 package com.my.rpc.config;
 
 import com.my.rpc.server.bio.RpcServer;
+import com.my.rpc.server.netty.NettyServer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,6 +17,12 @@ public class SpringConfig {
     @Bean
     public RpcServer rpcServer(){
         return new RpcServer();
+    }
+
+
+    @Bean
+    public NettyServer nettyServer(){
+        return new NettyServer();
     }
 
 

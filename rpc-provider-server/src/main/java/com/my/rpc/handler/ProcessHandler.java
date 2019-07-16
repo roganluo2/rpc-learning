@@ -22,30 +22,6 @@ public class ProcessHandler implements Runnable{
 
     private Map<String, Object> serviceMap;
 
-    public Object handle(RpcRequest rpcRequest){
-        try {
-            String className = rpcRequest.getClassName();
-            Class<?> aClass = Class.forName(className);
-
-            Object[] params = rpcRequest.getParams();
-            Class[] paramClasses = null;
-            if(params != null && params.length > 0)
-            {
-                paramClasses = new Class[params.length];
-                 for(int i=0;i<params.length;i++)
-                 {
-                     paramClasses[i] = params[i].getClass();
-                 }
-            }
-            Method method = aClass.getMethod(rpcRequest.getMethodName(), paramClasses);
-            Object service = serviceMap.get(className);
-            return method.invoke(service, params);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
     public void run() {
         InputStream inputStream = null;
@@ -54,7 +30,7 @@ public class ProcessHandler implements Runnable{
             inputStream = socket.getInputStream();
             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
             RpcRequest rpcRequest = (RpcRequest) objectInputStream.readObject();
-            Object handle = this.handle(rpcRequest);
+            Object handle = new RpcHander(rpcRequest, serviceMap).handle();
             outputStream = socket.getOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(handle);
