@@ -55,7 +55,7 @@ public class NettyServer implements ApplicationContextAware, InitializingBean {
                         ChannelPipeline pipeline = ch.pipeline();
                         //添加编码解码处理器
                         pipeline.addLast(new ObjectEncoder());
-                        pipeline.addLast(new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.weakCachingResolver(null)));
+                        pipeline.addLast(new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
                         pipeline.addLast(new ProcessRequestHandler(serviceMap));
                     }
                 });

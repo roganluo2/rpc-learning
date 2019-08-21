@@ -48,7 +48,8 @@ public class ProcessRequestHandler  extends SimpleChannelInboundHandler<RpcReque
         RpcReponse rpcReponse = new RpcReponse();
         rpcReponse.setId(rpcRequest.getId());
         rpcReponse.setObj(handle);
-        chx.writeAndFlush(rpcReponse).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+        chx.writeAndFlush(rpcReponse).addListener(ChannelFutureListener.CLOSE);
+//        chx.writeAndFlush(rpcReponse).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
     }
 
     //处理异常
