@@ -23,12 +23,17 @@ import java.util.concurrent.Executors;
  */
 public class RpcServer implements ApplicationContextAware, InitializingBean {
 
-    private ExecutorService executorService = Executors.newCachedThreadPool();
+    int port ;
 
+    private ExecutorService executorService = Executors.newCachedThreadPool();
+    public RpcServer(int port)
+    {
+        this.port = port;
+    }
     private Map<String,Object> serviceMap = new HashMap<String,Object>();
 
 
-    public void start(int port){
+    public void start(){
         ServerSocket serverSocket = null;
         Socket socket = null;
         InputStream inputStream = null;

@@ -2,11 +2,13 @@ package com.my.rpc.server.netty;
 
 import com.alibaba.fastjson.JSONObject;
 import com.my.rpc.handler.RpcHander;
-import com.my.rpc.protocol.RpcReponse;
-import com.my.rpc.protocol.RpcRequest;
+import com.my.rpc.entity.RpcReponse;
+import com.my.rpc.entity.RpcRequest;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.AllArgsConstructor;
 
 import java.util.Map;
@@ -19,12 +21,12 @@ import java.util.Map;
  */
 
 @AllArgsConstructor
-public class ProcessRequestHandler  extends ChannelInboundHandlerAdapter {
+public class ProcessRequestHandler  extends SimpleChannelInboundHandler<RpcRequest> {
 
     private Map<String,Object> serviceMap;
 
     //获取数据
-    @Override
+    /*@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf buf = (ByteBuf) msg;
         byte[] bytes = new byte[buf.readableBytes()];
@@ -37,6 +39,16 @@ public class ProcessRequestHandler  extends ChannelInboundHandlerAdapter {
         rpcReponse.setId(rpcRequest.getId());
         rpcReponse.setObj(handle);
         ctx.channel().write(JSONObject.toJSONString(rpcReponse));
+    }*/
+
+    @Override
+    protected void messageReceived(ChannelHandlerContext chx, RpcRequest rpcRequest) throws Exception {
+        System.out.println(JSONObject.toJSONString(rpcRequest));
+        Object handle = new RpcHander(rpcRequest, serviceMap).handle();
+        RpcReponse rpcReponse = new RpcReponse();
+        rpcReponse.setId(rpcRequest.getId());
+        rpcReponse.setObj(handle);
+        chx.writeAndFlush(rpcReponse).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
     }
 
     //处理异常

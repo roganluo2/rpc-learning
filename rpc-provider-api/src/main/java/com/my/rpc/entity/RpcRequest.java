@@ -1,4 +1,4 @@
-package com.my.rpc.protocol;
+package com.my.rpc.entity;
 
 import lombok.Data;
 
@@ -17,6 +17,8 @@ public class RpcRequest implements Serializable {
     private String methodName;
 
     private Object[] params;
+
+    private String version;
 
     private String id;
 

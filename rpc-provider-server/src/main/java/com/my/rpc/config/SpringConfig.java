@@ -5,6 +5,8 @@ import com.my.rpc.server.netty.NettyServer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.PostConstruct;
+
 
 /**
  * @Description TODO
@@ -14,15 +16,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SpringConfig {
 
-    @Bean
+    /*@Bean(initMethod = "start")
     public RpcServer rpcServer(){
-        return new RpcServer();
-    }
+        return new RpcServer(8080);
+    }*/
 
 
-    @Bean
+    @Bean(initMethod = "start")
     public NettyServer nettyServer(){
-        return new NettyServer();
+        return new NettyServer(8080);
     }
 
 

@@ -7,10 +7,14 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +32,13 @@ public class NettyServer implements ApplicationContextAware, InitializingBean {
     private Map<String,Object> serviceMap = new HashMap<String,Object>();
 
 
-    public void start(int port)
+    int port;
+
+    public NettyServer(int port) {
+        this.port = port;
+    }
+
+    public void start()
     {
         EventLoopGroup boosGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
@@ -44,6 +54,8 @@ public class NettyServer implements ApplicationContextAware, InitializingBean {
                         //拿到pipeline
                         ChannelPipeline pipeline = ch.pipeline();
                         //添加编码解码处理器
+                        pipeline.addLast(new ObjectEncoder());
+                        pipeline.addLast(new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.weakCachingResolver(null)));
                         pipeline.addLast(new ProcessRequestHandler(serviceMap));
                     }
                 });
@@ -56,8 +68,9 @@ public class NettyServer implements ApplicationContextAware, InitializingBean {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }finally {
-            boosGroup.shutdownGracefully();
-            workGroup.shutdownGracefully();
+            //不能关掉
+//            boosGroup.shutdownGracefully();
+//            workGroup.shutdownGracefully();
         }
 
 
@@ -70,7 +83,12 @@ public class NettyServer implements ApplicationContextAware, InitializingBean {
         for(Map.Entry<String,Object> e:entries)
         {
             APIInfo annotation = e.getValue().getClass().getAnnotation(APIInfo.class);
-            serviceMap.put(annotation.value().getName(), e.getValue());
+            String key = annotation.value().getName();
+            if(!StringUtils.isEmpty(annotation.version()))
+            {
+                key = key + "-" + annotation.version();
+            }
+            serviceMap.put(key, e.getValue());
         }
     }
 

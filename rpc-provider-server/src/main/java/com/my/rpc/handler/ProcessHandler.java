@@ -1,11 +1,10 @@
 package com.my.rpc.handler;
 
-import com.my.rpc.protocol.RpcRequest;
+import com.my.rpc.entity.RpcRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.*;
-import java.lang.reflect.Method;
 import java.net.Socket;
 import java.util.Map;
 

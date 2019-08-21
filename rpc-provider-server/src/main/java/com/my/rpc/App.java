@@ -16,8 +16,8 @@ public class App {
     public static void main(String[] args) {
 
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(App.class);
-        NettyServer nettyServer = applicationContext.getBean("nettyServer", NettyServer.class);
-        nettyServer.start(8080);
-
+//        NettyServer nettyServer = applicationContext.getBean("nettyServer", NettyServer.class);
+//        nettyServer.start(8080);
+        applicationContext.start();
     }
 }

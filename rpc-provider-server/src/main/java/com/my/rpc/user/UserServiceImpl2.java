@@ -9,13 +9,13 @@ import com.my.rpc.service.UserService;
  * @Date 2019/7/3 12:52
  * @Created by rogan.luo
  */
-@APIInfo(value = UserService.class, version = "v1")
-public class UserServiceImpl implements UserService {
+@APIInfo(value = UserService.class, version = "v2")
+public class UserServiceImpl2 implements UserService {
     public String save(User user) {
-        return "[v1] Hi " + user.getName();
+        return "【v2】Hi " + user.getName();
     }
 
     public String getById(Integer id) {
-        return "[v1] Success";
+        return "【v2】Success";
     }
 }

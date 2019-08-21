@@ -19,4 +19,6 @@ public @interface APIInfo {
 
     Class value();
 
+    String version() default "v1";
+
 }

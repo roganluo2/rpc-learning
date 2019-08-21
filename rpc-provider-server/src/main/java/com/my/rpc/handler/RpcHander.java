@@ -1,8 +1,7 @@
 package com.my.rpc.handler;
 
-import com.my.rpc.protocol.RpcRequest;
+import com.my.rpc.entity.RpcRequest;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -36,6 +35,7 @@ public class RpcHander {
                 }
             }
             Method method = aClass.getMethod(rpcRequest.getMethodName(), paramClasses);
+            className = className  +"-"+ rpcRequest.getVersion();
             Object service = serviceMap.get(className);
             return method.invoke(service, params);
         } catch (Exception e) {

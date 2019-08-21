@@ -1,4 +1,4 @@
-package com.my.rpc.protocol;
+package com.my.rpc.entity;
 
 import lombok.Data;
 
