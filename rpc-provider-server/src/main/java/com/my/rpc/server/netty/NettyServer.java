@@ -1,6 +1,8 @@
 package com.my.rpc.server.netty;
 
 import com.my.rpc.anno.APIInfo;
+import com.my.rpc.registry.IRegistryCenter;
+import com.my.rpc.registry.ZKRegistryCenter;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -16,6 +18,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.StringUtils;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +35,7 @@ public class NettyServer implements ApplicationContextAware, InitializingBean {
 
     private Map<String,Object> serviceMap = new HashMap<String,Object>();
 
+    private IRegistryCenter registryCenter = new ZKRegistryCenter();
 
     int port;
 
@@ -89,11 +94,24 @@ public class NettyServer implements ApplicationContextAware, InitializingBean {
                 key = key + "-" + annotation.version();
             }
             serviceMap.put(key, e.getValue());
+            registryCenter.registry(key, getAddress() + ":" + port);
         }
     }
+
+
 
     private ApplicationContext applicationContext;
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    private static String getAddress(){
+        InetAddress inetAddress=null;
+        try {
+            inetAddress=InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return inetAddress.getHostAddress();// 获得本机的ip地址
     }
 }

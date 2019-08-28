@@ -25,21 +25,7 @@ public class ProcessRequestHandler  extends SimpleChannelInboundHandler<RpcReque
 
     private Map<String,Object> serviceMap;
 
-    //获取数据
-    /*@Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = (ByteBuf) msg;
-        byte[] bytes = new byte[buf.readableBytes()];
-        buf.readBytes(bytes);
-        String requestStr = new String(bytes, "utf-8");
-        //转换成对象
-        RpcRequest rpcRequest = JSONObject.parseObject(requestStr, RpcRequest.class);
-        Object handle = new RpcHander(rpcRequest, serviceMap).handle();
-        RpcReponse rpcReponse = new RpcReponse();
-        rpcReponse.setId(rpcRequest.getId());
-        rpcReponse.setObj(handle);
-        ctx.channel().write(JSONObject.toJSONString(rpcReponse));
-    }*/
+
 
     @Override
     protected void messageReceived(ChannelHandlerContext chx, RpcRequest rpcRequest) throws Exception {

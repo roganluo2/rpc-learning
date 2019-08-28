@@ -1,7 +1,5 @@
 package com.my.rpc;
 
-import com.my.rpc.server.bio.RpcServer;
-import com.my.rpc.server.netty.NettyServer;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
